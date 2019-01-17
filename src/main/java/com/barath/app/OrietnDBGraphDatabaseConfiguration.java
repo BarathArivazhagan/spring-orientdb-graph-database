@@ -19,7 +19,7 @@ public class OrietnDBGraphDatabaseConfiguration {
 	
 	@Bean
 	public OrientGraphFactory graphFactory() {
-		return new OrientGraphFactory(graphUrl, userName, password);
+		return new OrientGraphFactory(graphUrl, userName, "admin");
 	}
 
 }

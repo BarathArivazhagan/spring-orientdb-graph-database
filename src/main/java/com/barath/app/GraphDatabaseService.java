@@ -1,8 +1,11 @@
 package com.barath.app;
 
+import java.awt.RenderingHints.Key;
+
 import javax.annotation.PostConstruct;
 
-import org.springframework.data.orient.commons.core.OrientDatabaseFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.tinkerpop.blueprints.Edge;
@@ -11,26 +14,24 @@ import com.tinkerpop.blueprints.impls.orient.OrientEdge;
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 
-import junit.framework.Test;
 
 @Service
-public class TestGraphDatabase {
+public class GraphDatabaseService {
 	
-	private OrientGraphFactory  graphFactory;
+	private static final Logger logger = LoggerFactory.getLogger(GraphDatabaseService.class);
+	private final OrientGraphFactory  graphFactory;
 	
-	public TestGraphDatabase(OrientGraphFactory  graphFactory) {
+	public GraphDatabaseService(OrientGraphFactory  graphFactory) {
 		this.graphFactory=graphFactory;
 	}
 	
 	
 	@PostConstruct
 	public void init() {
-		
-			OrientGraph graph=this.graphFactory.getTx();
-		
-		//	graph.createVertexType("Person");
-			//graph.createVertexType("Address");
 			
+		logger.info("initializing some values ");
+			OrientGraph graph=this.graphFactory.getTx();
+					
 			Vertex person1=	graph.addVertex("class:Person");
 			person1.setProperty("name", "PANKAJ");
 			person1.setProperty("age", 26);
@@ -44,10 +45,10 @@ public class TestGraphDatabase {
 			System.out.println("Edge is created "+livesEdge);
 		
 			graph.commit();
-			 Iterable<Edge>  edges=graph.getEdgesOfClass("lives");
+			Iterable<Edge>  edges=graph.getEdgesOfClass("lives");
 			edges.forEach( (edge) -> {
-				edge.getPropertyKeys().forEach(System.out::println);
-				System.out.println("EDGE "+edge.getLabel());
+				edge.getPropertyKeys().forEach( key -> logger.info(" key {}",key));
+				logger.info("EDGE label {}",edge.getLabel());
 			});
 	}
 
